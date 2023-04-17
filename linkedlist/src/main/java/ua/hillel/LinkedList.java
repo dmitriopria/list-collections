@@ -40,6 +40,7 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public void add(T element) {
+        Objects.requireNonNull(element);
         Node<T> newNode = new Node<>(element);
         if (first == null) {
             first = last = newNode;
@@ -53,6 +54,7 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public void add(int index, T element) {
+        Objects.requireNonNull(element);
         Objects.checkIndex(index, size + 1);
         Node<T> newNode = new Node<>(element);
         if (first == null) {
@@ -84,6 +86,7 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public T get(T element) {
+        Objects.requireNonNull(element);
         Node<T> current = first;
         for (int i = 0; i < size; i++) {
             if (current.element.equals(element)) {
@@ -99,7 +102,7 @@ public class LinkedList<T> implements List<T> {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        return get(0);
+        return getNode(0).element;
     }
 
     @Override
@@ -107,11 +110,12 @@ public class LinkedList<T> implements List<T> {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        return get(size - 1);
+        return getNode(size - 1).element;
     }
 
     @Override
     public void set(int index, T element) {
+        Objects.requireNonNull(element);
         Objects.checkIndex(index, size);
         Node<T> node = getNode(index);
         node.element = element;
@@ -143,6 +147,7 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public boolean contains(T element) {
+        Objects.requireNonNull(element);
         Node<T> current = first;
         for (int i = 0; i < size; i++) {
             if (current.element.equals(element)) {
