@@ -9,12 +9,12 @@ import java.util.Objects;
  */
 public class LinkedList<T> implements List<T> {
     private static class Node<T> {
-        T element;
-        Node<T> next;
+        private T element;
+        private Node<T> next;
+        private Node<T> prev;
 
-        public Node(T element) {
+        Node(T element) {
             this.element = element;
-            this.next = null;
         }
     }
 
@@ -23,9 +23,17 @@ public class LinkedList<T> implements List<T> {
     private int size;
 
     private Node<T> getNode(int index) {
-        Node<T> curr = first;
-        for (int i = 0; i < index; i++) {
-            curr = curr.next;
+        Node<T> curr;
+        if (index < size / 2) {
+            curr = first;
+            for (int i = 0; i < index; i++) {
+                curr = curr.next;
+            }
+        } else {
+            curr = last;
+            for (int i = size - 1; i > index; i--) {
+                curr = curr.prev;
+            }
         }
         return curr;
     }
@@ -37,6 +45,7 @@ public class LinkedList<T> implements List<T> {
             first = last = newNode;
         } else {
             last.next = newNode;
+            newNode.prev = last;
             last = newNode;
         }
         size++;
@@ -50,14 +59,18 @@ public class LinkedList<T> implements List<T> {
             first = last = newNode;
         } else if (index == 0) {
             newNode.next = first;
+            first.prev = newNode;
             first = newNode;
         } else if (index == size) {
             last.next = newNode;
+            newNode.prev = last;
             last = newNode;
         } else {
             Node<T> previousIndex = getNode(index - 1);
             newNode.next = previousIndex.next;
+            newNode.prev = previousIndex;
             previousIndex.next = newNode;
+            newNode.next.prev = newNode;
         }
         size++;
     }
@@ -66,7 +79,7 @@ public class LinkedList<T> implements List<T> {
     public T get(int index) {
         Objects.checkIndex(index, size);
         Node<T> node = getNode(index);
-        return (T) node;
+        return node.element;
     }
 
     @Override
@@ -113,13 +126,16 @@ public class LinkedList<T> implements List<T> {
             first = first.next;
             if (first == null) {
                 last = null;
+            } else {
+                first.prev = null;
             }
+        } else if (index == size - 1) {
+            last = last.prev;
+            last.next = null;
         } else {
             Node<T> previous = getNode(index - 1);
             previous.next = previous.next.next;
-            if (index == size - 1) {
-                last = previous;
-            }
+            previous.next.prev = previous;
         }
         size--;
         return true;
@@ -132,6 +148,7 @@ public class LinkedList<T> implements List<T> {
             if (current.element.equals(element)) {
                 return true;
             }
+            current = current.next;
         }
         return false;
     }
