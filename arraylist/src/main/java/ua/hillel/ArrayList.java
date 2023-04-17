@@ -9,53 +9,45 @@ import java.util.Objects;
  * is based on an array and is a simplified version of {@link java.util.ArrayList}.
  */
 public class ArrayList<T> implements List<T> {
-    private Object[] arrayElements;
+    private Object[] elements;
     private int size;
 
     public ArrayList() {
-        this.arrayElements = new Object[3];
-        this.size = 0;
+        this.elements = new Object[10];
     }
 
-    private void createNewArrIfNeed() {
-        if (arrayElements.length == size) {
-            int newCapacity = arrayElements.length * 2;
-            arrayElements = Arrays.copyOf(arrayElements, newCapacity);
+    private void resize() {
+        if (elements.length == size) {
+            int newCapacity = elements.length * 2;
+            elements = Arrays.copyOf(elements, newCapacity);
         }
     }
 
     @Override
     public void add(T element) {
-        createNewArrIfNeed();
-        arrayElements[size] = element;
-        size++;
+        resize();
+        elements[size++] = element;
     }
 
     @Override
     public void add(int index, T element) {
         Objects.checkIndex(index, size);
-        createNewArrIfNeed();
-        System.arraycopy(arrayElements, index, arrayElements, index + 1, size - index);
-        arrayElements[index] = element;
-        size++;
+        resize();
+        System.arraycopy(elements, index, elements, index + 1, size - index);
+        elements[size++] = element;
     }
 
     @Override
     public T get(int index) {
         Objects.checkIndex(index, size);
-        for (int i = 0; i < size; i++) {
-            if (i == index) {
-                return (T) arrayElements[i];
-            }
-        }
-        return null;
+        return (T) elements[index];
     }
 
     @Override
     public T get(T element) {
         for (int i = 0; i < size; i++) {
-            if (element.equals(arrayElements[i])) {
-                return (T) arrayElements[i];
+            if (element.equals(elements[i])) {
+                return (T) elements[i];
             }
         }
         return null;
@@ -66,7 +58,7 @@ public class ArrayList<T> implements List<T> {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        return get(0);
+        return (T) elements[0];
     }
 
     @Override
@@ -74,21 +66,21 @@ public class ArrayList<T> implements List<T> {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        return get(size - 1);
+        return (T) elements[size - 1];
     }
 
     @Override
     public void set(int index, T element) {
         Objects.checkIndex(index, size);
-        arrayElements[index] = element;
+        elements[index] = element;
     }
 
     @Override
     public boolean remove(int index) {
-        if (index < 0 || index > size - 1) {
+        if (index < 0 || index >= size) {
             return false;
         }
-        System.arraycopy(arrayElements, index + 1, arrayElements, index, size - index - 1);
+        System.arraycopy(elements, index + 1, elements, index, size - index - 1);
         size--;
         return true;
     }
@@ -96,7 +88,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public boolean contains(T element) {
         for (int i = 0; i < size; i++) {
-            if (element.equals(arrayElements[i])) {
+            if (element.equals(elements[i])) {
                 return true;
             }
         }
@@ -116,7 +108,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
-            arrayElements[i] = null;
+            elements[i] = null;
         }
         size = 0;
     }
